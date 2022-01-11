@@ -1,0 +1,62 @@
+#TuTu scraper
+from bs4 import BeautifulSoup
+import requests
+from csv import writer
+from datetime import datetime
+
+print("Добрый день!")
+print("Какие электрички вы хотите посмотреть?")
+s1 = "Зеленоград - Москва"
+s2 = "Зеленоград - Химки"
+s3 = "Москва - Зеленоград"
+s4 = "Химки - Зеленоград"
+print('1. '+s1)
+print('2. '+s2)
+print('3. '+s3)
+print('4. '+s4)
+el = input()
+ 
+def Get_trains(num='1'):
+    now = datetime.now()
+    current_time=now.strftime("%H:%M")
+    dst = ''
+    if num == '1':
+        response = requests.get("https://www.tutu.ru/rasp.php?st1=80710&st2=79310")
+        dst = s1
+    elif num == '2':
+        response = requests.get("https://www.tutu.ru/rasp.php?st1=80710&st2=80010")
+        dst = s2
+    elif num == '3':
+        response = requests.get("https://www.tutu.ru/rasp.php?st1=79310&st2=80710")
+        dst = s3
+    elif num == '4':
+        response = requests.get("https://www.tutu.ru/rasp.php?st1=80010&st2=80710")
+        dst = s4
+    soup = BeautifulSoup(response.text, "html.parser")
+    tables = soup.find_all("tr")
+    count = 5
+    type = ""
+    print(f"Список ближайших электричек по направлению {dst}:")
+    print("Отб.        Приб.        Тип        Цена      В пути")
+    for table in tables:
+        if count == 0:
+            break
+        dep = table.find(class_="g-link desktop__depTimeLink__1NA_N")
+        arr = table.find(class_="g-link desktop__arrTimeLink__2TJxM")
+        range = table.find(class_="t-txt-s desktop__cell__2cdVW desktop__range__1Kbxz")
+        price = table.find(class_="t-txt-s desktop__cell__2cdVW desktop__price__31Jsd")
+        traintype = table.get_text()
+        if (dep == None or arr == None):
+            continue
+        if "Ласточка" in traintype:
+            type = "Ласточка"
+        elif "Комфорт" in traintype:
+            type = "Комфорт "
+        else:
+            type = "Обычная "
+        price = price.get_text()
+        if price == "":
+            price = "225 ₽"
+        if str(current_time) < dep.get_text():
+            print(dep.get_text()+"       "+(arr.get_text().replace('(14 путь)',""))+"      "+type+"      "+price+"     "+range.get_text())
+            count-=1
