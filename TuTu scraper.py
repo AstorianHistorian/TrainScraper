@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from csv import writer
 from datetime import datetime
+import time
 
 from telegram import update
 import Constants as keys
@@ -116,6 +117,6 @@ def Get_trains(update,el='1'):
         if str(current_time) < dep.get_text():
             msg+= dep.get_text()+"   "+(arr.get_text().replace('(14 путь)',""))+"   "+type+"   "+price+"   "+range.get_text()+"\n"
             count-=1
-
+    time.sleep(1)
 
 main()
