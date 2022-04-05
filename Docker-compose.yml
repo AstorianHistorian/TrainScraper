@@ -1,15 +1,16 @@
-version: "3.9"
+version: '3.9'
+
+volumes:
+  server-data: 
+    driver: local
 
 services:
-  app:
-    user: $UID:$GID
-    build:
-      context: .
+  server:
+    image: ghcr.io/bots-house/docker-telegram-bot-api:latest
+    environment: 
+      # get this values from https://core.telegram.org/api/obtaining_api_id
+      TELEGRAM_API_ID: 5026688528
+      TELEGRAM_API_HASH: AAEL4kIDJ922BuC40X2ggwI9SMBCSuXJsso
     ports:
-      - "8000:8000"
-    volumes:
-      - ./app:/app
-    command: >
-      sh -c "python manage.py configs:
-            python manage.py migrate &&
-            python manage.py runserver 0.0.0.0:8000"
+      # access the API on 8081 port
+      - 8081:8081
