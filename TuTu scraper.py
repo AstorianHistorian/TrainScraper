@@ -1,9 +1,10 @@
-#TuTu scraper
+ #TuTu scraper
 from bs4 import BeautifulSoup
 import requests
 from csv import writer
 from datetime import datetime
 import time
+import pytz
 
 from telegram import update
 import Constants as keys
@@ -73,7 +74,7 @@ def main():
     updater.idle()
 
 def Get_trains(update,el='1'):
-    now = datetime.now()
+    now = datetime.now(pytz.timezone('Europe/Moscow'))
     current_time=now.strftime("%H:%M")
     dst = ''
     if el == '1':
