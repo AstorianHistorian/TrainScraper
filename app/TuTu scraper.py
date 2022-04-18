@@ -7,12 +7,11 @@ import time
 import pytz
 
 from telegram import update
-import Constants as keys
 from telegram.ext import *
 import Responses as R
 
 
-
+keys = API_KEY
 
 s1 = "Зеленоград - Москва"
 s2 = "Зеленоград - Химки"
